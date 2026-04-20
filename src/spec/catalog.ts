@@ -51,15 +51,11 @@ export const metabolightsCatalog: ApiCatalog = {
                 { name: "accession", type: "string", required: true, description: "Study accession" },
             ],
         },
-        {
-            method: "GET",
-            path: "/studies/{accession}/samples",
-            summary: "List biological samples for a study",
-            category: "study_resources",
-            pathParams: [
-                { name: "accession", type: "string", required: true, description: "Study accession" },
-            ],
-        },
+        // NOTE: /studies/{accession}/samples was removed 2026-04-17 — upstream
+        // has no such route and interprets the last segment as a TSV filename,
+        // returning HTTP 400 "not a valid TSV". Use the sample list embedded in
+        // the /studies/{accession} ISA-tab descriptor instead (see the `samples`
+        // array under `isaInvestigation.studies[0]`).
         {
             method: "GET",
             path: "/studies/{accession}/files",
