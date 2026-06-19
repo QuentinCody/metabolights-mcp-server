@@ -23,6 +23,8 @@ export function registerCodeMode(
 
     const executeTool = createExecuteTool({
         prefix: "metabolights",
+        // Verifiable provenance: metabolights_execute results carry a _meta.citation.
+        source: { id: "metabolights", name: "MetaboLights", url: "https://www.ebi.ac.uk/metabolights", license: "CC0 1.0" },
         catalog: metabolightsCatalog,
         apiFetch,
         doNamespace: env.METABOLIGHTS_DATA_DO,
