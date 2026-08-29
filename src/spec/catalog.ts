@@ -4,7 +4,7 @@ export const metabolightsCatalog: ApiCatalog = {
     name: "MetaboLights",
     baseUrl: "https://www.ebi.ac.uk/metabolights/ws",
     auth: "none",
-    endpointCount: 10,
+    endpointCount: 9,
     notes:
         "- MetaboLights (EBI) is the open repository for metabolomics studies — MS and NMR data + experimental metadata.\n" +
         "- Primary entry points: `/studies` (list / archive browsing) and `/studies/{MTBLS-id}` (single-study detail).\n" +
