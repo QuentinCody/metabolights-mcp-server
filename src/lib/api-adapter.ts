@@ -1,33 +1,14 @@
 import type { ApiFetchFn } from "@bio-mcp/shared/codemode/catalog";
-import { metabolightsFetch } from "./http";
+import { readMetabolights } from "./read";
+import { studyEvidence } from "./study-evidence";
+import { metabolightsCompleteness, observedCoverage } from "./completeness";
 
 export function createMetabolightsApiFetch(): ApiFetchFn {
     return async (request) => {
-        const response = await metabolightsFetch(request.path, request.params);
-
-        if (!response.ok) {
-            let errorBody: string;
-            try {
-                errorBody = await response.text();
-            } catch {
-                errorBody = response.statusText;
-            }
-            const error = new Error(`HTTP ${response.status}: ${errorBody.slice(0, 200)}`) as Error & {
-                status: number;
-                data: unknown;
-            };
-            error.status = response.status;
-            error.data = errorBody;
-            throw error;
-        }
-
-        const contentType = response.headers.get("content-type") || "";
-        if (!contentType.includes("json")) {
-            const text = await response.text();
-            return { status: response.status, data: text };
-        }
-
-        const data = await response.json();
-        return { status: response.status, data };
+        if (request.method.toUpperCase() !== "GET" || request.body !== undefined) throw Object.assign(new Error("This MetaboLights adapter accepts GET without a body"), { status: 405 });
+        const path = request.path.startsWith("/") ? request.path : `/${request.path}`;
+        const response = path.startsWith("/evidence/") ? await studyEvidence(path, request.params) : await readMetabolights(path, request.params);
+        return { status: response.status, data: response.data, upstreamTotal: null,
+            completeness: metabolightsCompleteness(response.data) ?? observedCoverage() };
     };
 }
